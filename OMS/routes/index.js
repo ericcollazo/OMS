@@ -16,6 +16,6 @@ exports.contact = function (req, res) {
 };
 
 exports.oms = function (req, res) {
-    res.render('oms', { title: 'OMS', year: new Date().getFullYear(), message: 'Order Management System' });
+    res.render('oms', { title: 'OMS', year: new Date().getFullYear(), message: 'Current Trade Book' });
 };
 

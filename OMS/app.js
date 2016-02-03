@@ -49,7 +49,7 @@ io.on('connection', function (socket) {
         if (err) {
             console.warn(err.message);
         } else {
-            var collection = db.collection('chat messages')
+            var collection = db.collection('trade')
             var stream = collection.find().sort().limit(10).stream();
             stream.on('data', function (trade) { console.log('emitting trade'); socket.emit('trade', trade.content); });
         }
