@@ -15,7 +15,10 @@ exports.contact = function (req, res) {
     res.render('contact', { title: 'Contact', year: new Date().getFullYear(), message: 'Your contact page' });
 };
 
-exports.oms = function (req, res) {
-    res.render('oms', { title: 'OMS', year: new Date().getFullYear(), message: 'Current Trade Book' });
+exports.research = function (req, res) {
+    res.render('research', { title: 'Stock Research', year: new Date().getFullYear(), message: 'Live Quotes' });
 };
 
+exports.oms = function (req, res) {
+    res.render('oms', { title: 'Order Managemet System', year: new Date().getFullYear(), message: 'Portfolio Management' });
+};
