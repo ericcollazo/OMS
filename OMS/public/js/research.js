@@ -1,12 +1,13 @@
-﻿var socket = io();
-$('#btnAdd').click(function () {
-    socket.emit('grid', $('#txtSymbol').val());
+﻿var app = angular.module('oms', []);
+var socket = io();
+
+app.controller('symbol-controller', function ($scope) {
+    
+    //$scope.symbols = socket
+    $scope.symbolAdd = function () {
+        socket.emit('grid', $scope.newSymbol);
+        $scope.newSymbol = "";
+    }
+    $scope.refresh = function () {
+    };
 });
-
-//$('#btnRefresh').click(function () {
-//    socket.emit('grid', $('txtSymbol').val);
-//});
-
-//socket.on('grid', function (msg) {
-//    $('#messages').append($('<p>').text(msg));
-//});

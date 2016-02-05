@@ -16,6 +16,7 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.configure('development', function () { app.locals.pretty = true; });
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -50,9 +51,13 @@ io.on('connection', function (socket) {
         if (err) {
             console.warn(err.message);
         } else {
-            var collection = db.collection('trades')
-            var stream = collection.find().sort().stream();
+            var trades = db.collection('trades')
+            var stream = trades.find().sort().stream();
             stream.on('data', function (trade) { console.log('emitting trade'); socket.emit('trade', trade.content); });
+            
+            var symbols = db.collection('grid')
+            var stream = symbols.find().sort().stream();
+            stream.on('data', function (symbol) { console.log('emitting symbol'); socket.emit('symbol', symbol.content); });
         }
     });
     
@@ -66,8 +71,8 @@ io.on('connection', function (socket) {
             if (err) {
                 console.warn(err.message);
             } else {
-                var collection = db.collection('trades');
-                collection.insert({ content: msg }, function (err, o) {
+                var trades = db.collection('trades');
+                trades.insert({ content: msg }, function (err, o) {
                     if (err) { console.warn(err.message); }
                     else { console.log("Trade inserted into db: " + msg); }
                 });

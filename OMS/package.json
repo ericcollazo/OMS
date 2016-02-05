@@ -8,6 +8,7 @@
     "email": "ecollazo@consultant.com"
   },
   "dependencies": {
+    "angular": "^1.4.9",
     "express": "3.4.4",
     "jade": "*",
     "mongodb": "^1.4.40",
