@@ -16,12 +16,12 @@ app.controller('symbol-controller', function ($scope, $http) {
            {
                var symbol = {
                    name: data,
-                   price: '$' + json.LastPrice,
-                   delta: json.Change.toPrecision(2),
-                   deltap: json.ChangePercent.toPrecision(2) + '%',
+                   price: json.LastPrice.toFixed(2),
+                   delta: json.Change.toFixed(2),
+                   deltap: json.ChangePercent.toFixed(2) + '%',
                    marketCap: json.MarketCap,
                    volume: json.Volume,
-                   hlc: json.High + '/' + json.Low + '/' + json.Open,
+                   hlc: json.High.toFixed(2) + '/' + json.Low.toFixed(2) + '/' + json.Open.toFixed(2),
                    timestamp: json.Timestamp
                };
                $scope.symbols.push(symbol);
