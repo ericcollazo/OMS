@@ -4,38 +4,37 @@ block content
   h2 #{title}
     h3 #{message}
     p Enter stocks to research in the grid below.
-    div(ng-app="oms")
-        div(ng-controller="symbol-controller")
-            #Research.input-group
-                input.form-control(placeholder="Enter stock symbol...", type="text", ng-model="newSymbol")
-                #Action.input-group-btn
-                button.btn.btn-sm.btn-success(type="button", ng-click="symbolAdd()") Add To Grid
-                button.btn.btn-sm.btn-primary(type="button", ng-click="refresh()") Refresh Data
-            table.table
-                thead
-                    tr
-                        th Symbol
-                        th Last Trade Price
-                        th Δ
-                        th Δ%
-                        th Market Cap
-                        th Volume
-                        th H/L/O
-                        th Timestamp
-                        th Action
-                tbody
-                    tr(ng-repeat="symbol in symbols")
-                        td {{symbol.name}}
-                        td {{symbol.price}}
-                        td {{symbol.delta}}
-                        td {{symbol.deltap}}
-                        td {{symbol.marketCap}}
-                        td {{symbol.volume}}
-                        td {{symbol.hlc}}
-                        td {{symbol.timestamp}}
-                        td
-                            button.btn.btn-sm.btn-success(type="button", ng-click="tradeSymbol()") Trade
-                            button.btn.btn-sm.btn-danger(type="button", ng-click="removeSymbol()") Remove
+    div(ng-app="oms", ng-controller="symbol-controller")
+        #Research.input-group
+            input.form-control(placeholder="Enter stock symbol...", type="text", ng-model="newSymbol")
+            #Action.input-group-btn
+            button.btn.btn-sm.btn-success(type="button", ng-click="symbolAdd()") Add To Grid
+            button.btn.btn-sm.btn-primary(type="button", ng-click="refresh()") Refresh Data
+        table.table
+            thead
+                tr
+                    th Symbol
+                    th Last Trade Price
+                    th Δ
+                    th Δ%
+                    th Market Cap
+                    th Volume
+                    th H/L/O
+                    th Timestamp
+                    th Action
+            tbody
+                tr(ng-repeat="symbol in symbols")
+                    td {{symbol.name}}
+                    td {{symbol.price}}
+                    td {{symbol.delta}}
+                    td {{symbol.deltap}}
+                    td {{symbol.marketCap}}
+                    td {{symbol.volume}}
+                    td {{symbol.hlc}}
+                    td {{symbol.timestamp}}
+                    td
+                        button.btn.btn-sm.btn-success(type="button", ng-click="tradeSymbol(symbol.name)") Trade
+                        button.btn.btn-sm.btn-danger(type="button", ng-click="removeSymbol(symbol.name)") Remove
 
 block body_end
   script(type='text/javascript' src='/js/research.js')

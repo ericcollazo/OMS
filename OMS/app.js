@@ -45,26 +45,57 @@ serve.listen(app.get('port'), function () {
 });
 
 io.on('connection', function (socket) {
+    
     console.log('a user connected');
-    
-    mongo.connect(dbCollection, function (err, db) {
-        if (err) {
-            console.warn(err.message);
-        } else {
-            var trades = db.collection('trades')
-            var stream = trades.find().sort().stream();
-            stream.on('data', function (trade) { console.log('emitting trade'); socket.emit('trade', trade.content); });
-            
-            var symbols = db.collection('grid')
-            var stream = symbols.find().sort().stream();
-            stream.on('data', function (symbol) { console.log('emitting symbol'); socket.emit('symbol', symbol.content); });
-        }
-    });
-    
+       
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });
     
+    socket.on('refreshGrid', function (msg) {
+        mongo.connect(dbCollection, function (err, db) {
+            if (err) {
+                console.warn(err.message);
+            } else {
+                var symbols = db.collection('grid')
+                var stream = symbols.find().sort('{symbol: 1}').stream();
+                stream.on('data', function (grid) { console.log('refresh emitting symbol: ' + grid.symbol); socket.emit('gridSend', grid.symbol); });
+            }
+        });
+    });
+    
+    socket.on('gridAdd', function (msg) {
+        
+        mongo.connect(dbCollection, function (err, db) {
+            if (err) {
+                console.warn(err.message);
+            } else {
+                var collection = db.collection('grid');
+                collection.insert({ symbol: msg }, function (err, o) {
+                    if (err) { console.warn(err.message); }
+                    else { console.log("Symbol inserted into db: " + msg); }
+                });
+            }
+            socket.broadcast.emit('grid', msg);
+        });
+    });
+    
+    socket.on('gridRemove', function (msg) {
+        
+        mongo.connect(dbCollection, function (err, db) {
+            if (err) {
+                console.warn(err.message);
+            } else {
+                var collection = db.collection('grid');
+                collection.remove({ symbol: msg }, function (err, o) {
+                    if (err) { console.warn(err.message); }
+                    else { console.log("Symbol removed from db: " + msg); }
+                });
+            }
+            socket.broadcast.emit('grid', msg);
+        });
+    });
+
     socket.on('trade', function (msg) {
         
         mongo.connect(dbCollection, function (err, db) {
@@ -77,63 +108,7 @@ io.on('connection', function (socket) {
                     else { console.log("Trade inserted into db: " + msg); }
                 });
             }
+            socket.broadcast.emit('trade', msg);
         });
-        
-        socket.broadcast.emit('trade', msg);
-    });
-
-    socket.on('grid', function (msg) {
-        
-        mongo.connect(dbCollection, function (err, db) {
-            if (err) {
-                console.warn(err.message);
-            } else {
-                var collection = db.collection('grid');
-                collection.insert({ symbol: msg }, function (err, o) {
-                    if (err) { console.warn(err.message); }
-                    else { console.log("Symbol inserted into db: " + msg); }
-                });
-            }
-        });
-        
-        socket.broadcast.emit('grid', msg);
     });
 });
-
-/**
- * HOW TO Make an HTTP Call - GET
- */
-// options for GET
-
-//var https = require('http');
-
-//var optionsget = {
-//    host : 'http://dev.markitondemand.com/MODApis/Api/v2/Quote', // here only the domain name
-//    // (no http/https !)
-//    path : '/jsonp?symbol=AAPL', // the rest of the url with parameters if needed
-//    method : 'GET' // do GET
-//};
-
-//console.info('Options prepared:');
-//console.info(optionsget);
-//console.info('Do the GET call');
-
-//// do the GET request
-//var reqGet = https.request(optionsget, function (res) {
-//    console.log("statusCode: ", res.statusCode);
-//    // uncomment it for header details
-//    //  console.log("headers: ", res.headers);
-    
-    
-//    res.on('data', function (d) {
-//        console.info('GET result:\n');
-//        process.stdout.write(d);
-//        console.info('\n\nCall completed');
-//    });
- 
-//});
-
-//reqGet.end();
-//reqGet.on('error', function (e) {
-//    console.error(e);
-//});
