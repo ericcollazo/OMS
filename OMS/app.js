@@ -47,12 +47,10 @@ serve.listen(app.get('port'), function () {
 io.on('connection', function (socket) {
     
     console.log('a user connected');
-       
-    socket.on('disconnect', function () {
-        console.log('user disconnected');
-    });
     
-    socket.on('refreshGrid', function (msg) {
+    var gridInterval = setInterval(function () { refreshGrid(); }, 30000);
+    
+    function refreshGrid(){
         mongo.connect(dbCollection, function (err, db) {
             if (err) {
                 console.warn(err.message);
@@ -62,6 +60,15 @@ io.on('connection', function (socket) {
                 stream.on('data', function (grid) { console.log('refresh emitting symbol: ' + grid.symbol); socket.emit('gridSend', grid.symbol); });
             }
         });
+    }
+       
+    socket.on('disconnect', function () {
+        console.log('user disconnected');
+        clearInterval(gridInterval);
+    });
+    
+    socket.on('refreshGrid', function (msg) {
+        refreshGrid();
     });
     
     socket.on('gridAdd', function (msg) {

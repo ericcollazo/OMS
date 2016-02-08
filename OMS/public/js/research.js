@@ -24,8 +24,28 @@ app.controller('symbol-controller', function ($scope, $http) {
                            hlc: json.High.toFixed(2) + '/' + json.Low.toFixed(2) + '/' + json.Open.toFixed(2),
                            timestamp: json.Timestamp
                        };
-                       $scope.symbols.push(symbol);
-                       //$scope.$apply();
+
+                       var found = false;
+
+                       $.each($scope.symbols, function () {
+                           if (this.name == symbol.name) {
+                               this.price = symbol.price;
+                               this.delta = symbol.delta;
+                               this.deltap = symbol.deltap;
+                               this.marketCap = symbol.marketCap;
+                               this.volume = symbol.volume;
+                               this.hlc = symbol.hlc;
+                               this.timestamp = symbol.timestamp;
+                               found = true;
+                               return false;
+                           }
+                       });
+
+                       if (!found) { $scope.symbols.push(symbol); };
+
+                       $(".form-control-static").addClass("timestamp_live");
+                       setTimeout(function () { $(".form-control-static").removeClass("timestamp_live") }, 3000);
+
                        console.log(json);
                    })
                    .error(function (msg) {
@@ -70,4 +90,39 @@ app.controller('symbol-controller', function ($scope, $http) {
             });
     };
 
+    $('#tradeModal').on('show.bs.modal', function (event) {
+        $scope.$evalAsync(
+            function ($scope) {
+                var button = $(event.relatedTarget)
+                var symbol = button.data('symbol')
+
+                $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + symbol + '&callback=JSON_CALLBACK')
+               .success(function (json) {
+                   var trade = {
+                       name: symbol,
+                       price: json.LastPrice.toFixed(2),
+                   };
+                   $scope.trade = trade;
+               })
+            });
+    });
+
+    $scope.trade = [];
+
+    $('#tradeModal').on('show.bs.modal', function (event) {
+        $scope.$evalAsync(
+            function ($scope) {
+                var button = $(event.relatedTarget)
+                var symbol = button.data('symbol')
+
+                $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + symbol + '&callback=JSON_CALLBACK')
+               .success(function (json) {
+                   var trade = {
+                       name: symbol,
+                       price: json.LastPrice.toFixed(2),
+                   };
+                   $scope.trade = trade;
+               })
+            });
+    });
 });

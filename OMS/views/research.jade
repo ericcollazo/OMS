@@ -9,7 +9,7 @@ block content
             input.form-control(placeholder="Enter stock symbol...", type="text", ng-model="newSymbol")
             #Action.input-group-btn
             button.btn.btn-sm.btn-success(type="button", ng-click="symbolAdd()") Add To Grid
-            button.btn.btn-sm.btn-primary(type="button", ng-click="refresh()") Refresh Data
+            //button.btn.btn-sm.btn-primary(type="button", ng-click="refresh()") Refresh Data
         table.table
             thead
                 tr
@@ -31,25 +31,30 @@ block content
                     td(align="right") {{symbol.marketCap}}
                     td(align="right") {{symbol.volume}}
                     td {{symbol.hlc}}
-                    td {{symbol.timestamp}}
+                    td 
+                        span.form-control-static {{symbol.timestamp}}
                     td
-                        button.btn.btn-sm.btn-success(type="button", data-toggle="modal", data-target="#lookupModal") Trade
+                        button.btn.btn-sm.btn-success(type="button", data-toggle="modal", data-target="#tradeModal", data-symbol='{{symbol.name}}') Trade
                         button.btn.btn-sm.btn-danger(type="button", ng-click="removeSymbol(symbol.name)") Remove
 
-
-  div.modal.fade(id="lookupModal", tabindex=-1, role="dialog", aria-labelledby="lookupModalLabel")
-      div.modal-dialog(role="document")
-          div.modal-contact
-              div.modal-header
-                  button.close(type="button", data-dismiss="modal", aria-label="Close") 
-                      span(aria-hidden="true") &times;
-                  div.modal-title(id="lookupModalLabel") 
-                      h4 Lookup Symbol
-              div.modal-body
-                  p This is the modal body
-              div.modal-footer
-                  button.btn.btn-default(type="button", data-dismiss="modal") Close
-                  button.btn.btn-primary Save Changes
+          div.modal.fade(id="tradeModal", tabindex=-1, role="dialog", aria-labelledby="tradeModalLabel")
+              div.modal-dialog(role="document")
+                  div.modal-content
+                      div.modal-header
+                          button.close(type="button", data-dismiss="modal", aria-label="Close") 
+                              span(aria-hidden="true") &times;
+                          div.modal-title(id="tradeModalLabel")
+                              h4 Stock Trade
+                      div.modal-body
+                          p Symbol: {{trade.name}}
+                          p Last Trade Price: {{trade.price}}
+                          div.input-group
+                              input.form-control(placeholder="Shares to trade...", type="text", ng-model="tradeShares")
+                              div.input-group-btn
+                              button.btn.btn-sm.btn-success(type="button", ng-click="buySymbol(trade.name)") Buy
+                              button.btn.btn-sm.btn-danger(type="button", ng-click="sellSymbol(trade.name)") Sell
+                      div.modal-footer
+                          button.btn.btn-default(type="button", data-dismiss="modal") Close
 
 block body_end
   script(type='text/javascript' src='/js/research.js')
