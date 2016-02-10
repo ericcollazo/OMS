@@ -10,6 +10,7 @@
   "dependencies": {
     "angular": "^1.4.9",
     "express": "3.4.4",
+    "highcharts": "^4.2.3",
     "jade": "*",
     "mongodb": "^1.4.40",
     "mongoose": "^3.9.7",

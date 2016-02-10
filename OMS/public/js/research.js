@@ -4,6 +4,7 @@ var socket = io.connect(window.location.origin);
 app.controller('symbol-controller', function ($scope, $http) {
 
     $scope.symbols = [];
+    $scope.trade = [];
 
     angular.element(document).ready(function () {
         $scope.refresh();
@@ -22,7 +23,8 @@ app.controller('symbol-controller', function ($scope, $http) {
                            marketCap: json.MarketCap,
                            volume: json.Volume,
                            hlc: json.High.toFixed(2) + '/' + json.Low.toFixed(2) + '/' + json.Open.toFixed(2),
-                           timestamp: json.Timestamp
+                           timestamp: json.Timestamp,
+                           newSymbol: true
                        };
 
                        var found = false;
@@ -36,12 +38,20 @@ app.controller('symbol-controller', function ($scope, $http) {
                                this.volume = symbol.volume;
                                this.hlc = symbol.hlc;
                                this.timestamp = symbol.timestamp;
+                               this.newSymbol = symbol.newSymbol;
                                found = true;
                                return false;
                            }
                        });
 
                        if (!found) { $scope.symbols.push(symbol); };
+
+                       //$.each($scope.symbols, function () {
+                       //    if (this.name == symbol.name) {
+                       //        setTimeout(function () { this.newSymbol = false }, 3000);
+                       //        return false;
+                       //    }
+                       //});
 
                        $(".form-control-static").addClass("timestamp_live");
                        setTimeout(function () { $(".form-control-static").removeClass("timestamp_live") }, 3000);
@@ -96,29 +106,11 @@ app.controller('symbol-controller', function ($scope, $http) {
                 var button = $(event.relatedTarget)
                 var symbol = button.data('symbol')
 
-                $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + symbol + '&callback=JSON_CALLBACK')
+                $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + symbol.name + '&callback=JSON_CALLBACK')
                .success(function (json) {
                    var trade = {
-                       name: symbol,
-                       price: json.LastPrice.toFixed(2),
-                   };
-                   $scope.trade = trade;
-               })
-            });
-    });
-
-    $scope.trade = [];
-
-    $('#tradeModal').on('show.bs.modal', function (event) {
-        $scope.$evalAsync(
-            function ($scope) {
-                var button = $(event.relatedTarget)
-                var symbol = button.data('symbol')
-
-                $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + symbol + '&callback=JSON_CALLBACK')
-               .success(function (json) {
-                   var trade = {
-                       name: symbol,
+                       name: symbol.name,
+                       fullName: json.Name,
                        price: json.LastPrice.toFixed(2),
                    };
                    $scope.trade = trade;

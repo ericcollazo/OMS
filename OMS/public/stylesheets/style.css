@@ -37,6 +37,6 @@ input[type="checkbox"].input-validation-error {
 }
 @-webkit-keyframes glow {
   to {
-    text-shadow: 0 0 10px #ff0;
+    text-shadow: 0 0 10px #f00;
   }
 }

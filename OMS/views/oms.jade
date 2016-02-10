@@ -8,3 +8,25 @@ block content
         h3 #{message}
     .panel-body
     p Manage your portfolio in the grid below.
+
+
+
+    //
+              div.modal.fade(id="tradeModal", tabindex=-1, role="dialog", aria-labelledby="tradeModalLabel")
+              div.modal-dialog(role="document")
+                  div.modal-content
+                      div.modal-header
+                          button.close(type="button", data-dismiss="modal", aria-label="Close") 
+                              span(aria-hidden="true") &times;
+                          div.modal-title(id="tradeModalLabel")
+                              h4 Stock Trade
+                      div.modal-body
+                          p Symbol: {{trade.name}}
+                          p Last Trade Price: {{trade.price}}
+                          div.input-group
+                              input.form-control(placeholder="Shares to trade...", type="text", ng-model="tradeShares")
+                              div.input-group-btn
+                              button.btn.btn-sm.btn-success(type="button", ng-click="buySymbol(trade.name)") Buy
+                              button.btn.btn-sm.btn-danger(type="button", ng-click="sellSymbol(trade.name)") Sell
+                      div.modal-footer
+                          button.btn.btn-default(type="button", data-dismiss="modal") Close
