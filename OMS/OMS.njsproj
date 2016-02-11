@@ -33,6 +33,10 @@
     <Compile Include="app.js" />
     <Content Include="public\js\oms.js" />
     <Content Include="public\js\research.js" />
+    <Content Include="public\javascripts\highstock.js" />
+    <Content Include="public\javascripts\highcharts.js" />
+    <Content Include="public\js\chart.js" />
+    <Content Include="public\javascripts\purl.js" />
     <Compile Include="routes\index.js" />
   </ItemGroup>
   <ItemGroup>

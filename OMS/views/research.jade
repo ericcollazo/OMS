@@ -3,39 +3,42 @@
 block content
   h2 #{title}
     h3 #{message}
-    p Enter stocks to research in the grid below.
-    div(ng-app="oms", ng-controller="symbol-controller")
-        #Research.input-group
-            input.form-control(placeholder="Enter stock symbol...", type="text", ng-model="newSymbol")
-            #Action.input-group-btn
-            button.btn.btn-sm.btn-success(type="button", ng-click="symbolAdd()") Add To Grid
-        table.table.table-bordered
-            thead
-                tr
-                    th Symbol
-                    th(align="right") Last Trade Price
-                    th(align="right") Δ
-                    th(align="right") Δ%
-                    th(align="right") Market Cap
-                    th(align="right") Volume
-                    th H/L/O
-                    th Timestamp
-                    th Action
-            tbody
-                tr(ng-repeat="symbol in symbols", ng-class="[{'success': symbol.delta > 0}, {'danger': symbol.delta < 0}]")
-                    td {{symbol.name}}
-                    td(align="right") {{symbol.price}}
-                    td(align="right") {{symbol.delta}}
-                    td(align="right") {{symbol.deltap}}
-                    td(align="right") {{symbol.marketCap}}
-                    td(align="right") {{symbol.volume}}
-                    td {{symbol.hlc}}
-                    td 
-                        span.form-control-static {{symbol.timestamp}}
-                    td
-                        button.btn.btn-sm.btn-success(type="button", data-toggle="modal", data-target="#tradeModal", data-symbol='{{symbol}}') Trade
-                        button.btn.btn-sm.btn-danger(type="button", ng-click="removeSymbol(symbol.name)") Remove
-
+    p Enter stocks to research below....
+    #Research.input-group
+    input.form-control(placeholder="Enter stock symbol...", type="text", ng-model="newSymbol")
+    #Action.input-group-btn
+    button.btn.btn-sm.btn-success(type="button", ng-click="symbolAdd()") Add To Grid
+    p
+    div.panel-group(id="accordian", ng-app="oms", ng-controller="symbol-controller")
+        div.panel.panel-default(ng-repeat="symbol in symbols | orderBy:'symbol'", ng-class="[{'panel-success': symbol.delta > 0}, {'panel-danger': symbol.delta < 0}]")
+            div.panel-heading
+                h3.panel-title 
+                    a(data-toggle="collapse", data-parent="#accordian", href="#collapse"+"{{symbol.symbol}}", , ng-click="togglePanel($event, symbol.symbol)")
+                        {{symbol.symbol}} : {{symbol.name}}  @ ${{symbol.price}} ({{symbol.delta}})
+            div.panel-collapse.collapse(id="collapse"+"{{symbol.symbol}}", data-symbol="{{symbol.symbol}}")
+                div.panel-body
+                    table.table
+                        th(align="right") Price
+                        th(align="right") Δ
+                        th(align="right") Δ%
+                        th(align="right") Market Cap
+                        th(align="right") Volume
+                        th H/L/O
+                        th Timestamp
+                        th Action
+                        tr
+                            td(align="right") {{symbol.price}}
+                            td(align="right") {{symbol.delta}}
+                            td(align="right") {{symbol.deltap}}
+                            td(align="right") {{symbol.marketCap}}
+                            td(align="right") {{symbol.volume}}
+                            td {{symbol.hlc}}
+                            td 
+                                span.form-control-static {{symbol.timestamp}}
+                            td
+                                button.btn.btn-sm.btn-success(type="button", data-toggle="modal", data-target="#tradeModal", data-symbol='{{symbol}}') Trade
+                                button.btn.btn-sm.btn-danger(type="button", ng-click="removeSymbol(symbol.name)") Remove
+                    //#chartDemoContainer(style="height: 500px; min-width: 500px; margin-bottom: 30px;")
           div.modal.fade(id="tradeModal", tabindex=-1, role="dialog", aria-labelledby="tradeModalLabel")
               div.modal-dialog(role="document")
                   div.modal-content
@@ -57,4 +60,12 @@ block content
                           button.btn.btn-default(type="button", data-dismiss="modal") Close
 
 block body_end
-  script(type='text/javascript' src='/js/research.js')
+    script(type='text/javascript' src='/js/chart.js')
+    script(type='text/javascript' src='/js/research.js')
+    script.
+        $(function(){ 
+            var sym = $.url().param('symbol') || 'AAPL'; 
+            var dur = $.url().param('duration') || 3650; 
+            new Markit.InteractiveChartApi(sym, dur); 
+        });
+

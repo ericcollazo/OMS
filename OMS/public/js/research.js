@@ -5,7 +5,7 @@ app.controller('symbol-controller', function ($scope, $http) {
 
     $scope.symbols = [];
     $scope.trade = [];
-
+    
     angular.element(document).ready(function () {
         $scope.refresh();
     });
@@ -16,7 +16,8 @@ app.controller('symbol-controller', function ($scope, $http) {
                 $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + data + '&callback=JSON_CALLBACK')
                    .success(function (json) {
                        var symbol = {
-                           name: data,
+                           symbol: data,
+                           name: json.Name,
                            price: json.LastPrice.toFixed(2),
                            delta: json.Change.toFixed(2),
                            deltap: json.ChangePercent.toFixed(2) + '%',
@@ -30,7 +31,7 @@ app.controller('symbol-controller', function ($scope, $http) {
                        var found = false;
 
                        $.each($scope.symbols, function () {
-                           if (this.name == symbol.name) {
+                           if (this.symbol == symbol.symbol) {
                                this.price = symbol.price;
                                this.delta = symbol.delta;
                                this.deltap = symbol.deltap;
@@ -46,15 +47,10 @@ app.controller('symbol-controller', function ($scope, $http) {
 
                        if (!found) { $scope.symbols.push(symbol); };
 
-                       //$.each($scope.symbols, function () {
-                       //    if (this.name == symbol.name) {
-                       //        setTimeout(function () { this.newSymbol = false }, 3000);
-                       //        return false;
-                       //    }
-                       //});
-
                        $(".form-control-static").addClass("timestamp_live");
                        setTimeout(function () { $(".form-control-static").removeClass("timestamp_live") }, 3000);
+
+                       //new Markit.InteractiveChartApi(symbol.symbol, 3650);
 
                        console.log(json);
                    })
@@ -98,6 +94,15 @@ app.controller('symbol-controller', function ($scope, $http) {
                 $scope.symbols.length = 0;
                 socket.emit('refreshGrid', 'go');
             });
+    };
+
+    $scope.togglePanel = function($event, symbol){
+        $scope.$evalAsync(
+            function ($scope) {
+                $("#chartDemoContainer").remove();
+                $("#collapse"+symbol).append("<div id='chartDemoContainer'></div>");
+                new Markit.InteractiveChartApi(symbol, 3650);
+        });
     };
 
     $('#tradeModal').on('show.bs.modal', function (event) {
