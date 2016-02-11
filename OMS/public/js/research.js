@@ -5,6 +5,7 @@ app.controller('symbol-controller', function ($scope, $http) {
 
     $scope.symbols = [];
     $scope.trade = [];
+    $scope.lookUps = [];
     
     angular.element(document).ready(function () {
         $scope.refresh();
@@ -50,7 +51,8 @@ app.controller('symbol-controller', function ($scope, $http) {
                        $(".form-control-static").addClass("timestamp_live");
                        setTimeout(function () { $(".form-control-static").removeClass("timestamp_live") }, 3000);
 
-                       //new Markit.InteractiveChartApi(symbol.symbol, 3650);
+                       $(".panel-title").addClass("timestamp_live");
+                       setTimeout(function () { $(".panel-title").removeClass("timestamp_live") }, 3000);
 
                        console.log(json);
                    })
@@ -61,16 +63,16 @@ app.controller('symbol-controller', function ($scope, $http) {
            );
     });
 
-    $scope.symbolAdd = function () {
+    $scope.symbolLookUp = function () {
         if ($scope.newSymbol) {
             $scope.$evalAsync(
                 function ($scope) {
                     $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=' + $scope.newSymbol + '&callback=JSON_CALLBACK')
                        .success(function (json) {
                            if (json) {
-                               socket.emit('gridAdd', json[0].Symbol);
-                               $scope.newSymbol = "";
-                               $scope.refresh();
+                               $scope.lookUps = json;
+                               $scope.apply;
+                               $('#lookUpModal').modal('show')
                            }
                        })
                        .error(function (msg) {
@@ -78,6 +80,16 @@ app.controller('symbol-controller', function ($scope, $http) {
                        })
                 });
         }
+    }
+
+    $scope.addSymbol = function(data){
+        $scope.$evalAsync(
+            function ($scope) {
+                $('#lookUpModal').modal('hide')
+                socket.emit('gridAdd', data);
+                $scope.newSymbol = "";
+                $scope.refresh();
+        });        
     }
 
     $scope.removeSymbol = function (data) {
@@ -100,26 +112,21 @@ app.controller('symbol-controller', function ($scope, $http) {
         $scope.$evalAsync(
             function ($scope) {
                 $("#chartDemoContainer").remove();
-                $("#collapse"+symbol).append("<div id='chartDemoContainer'></div>");
+                fixed = insertString(symbol);
+                $('#collapse'+fixed).append("<div id='chartDemoContainer'></div>");
                 new Markit.InteractiveChartApi(symbol, 3650);
         });
     };
 
-    $('#tradeModal').on('show.bs.modal', function (event) {
-        $scope.$evalAsync(
-            function ($scope) {
-                var button = $(event.relatedTarget)
-                var symbol = button.data('symbol')
+    function insertString(a, b, at)
+    {
+        var position = a.indexOf('.'); 
 
-                $http.jsonp('http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=' + symbol.name + '&callback=JSON_CALLBACK')
-               .success(function (json) {
-                   var trade = {
-                       name: symbol.name,
-                       fullName: json.Name,
-                       price: json.LastPrice.toFixed(2),
-                   };
-                   $scope.trade = trade;
-               })
-            });
-    });
+        if (position !== -1)
+        {
+            return a.substr(0, position) + '\\\\' + a.substr(position);    
+        }  
+
+        return a;
+    }
 });
