@@ -48,7 +48,7 @@ io.on('connection', function (socket) {
     
     console.log('a user connected');
     
-    var gridInterval = setInterval(function () { refreshGrid(); }, 10000);
+    var gridInterval = setInterval(function () { refreshGrid(); }, 30000);
     
     function refreshGrid(){
         mongo.connect(dbCollection, function (err, db) {

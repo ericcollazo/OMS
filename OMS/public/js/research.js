@@ -112,21 +112,8 @@ app.controller('symbol-controller', function ($scope, $http) {
         $scope.$evalAsync(
             function ($scope) {
                 $("#chartDemoContainer").remove();
-                fixed = insertString(symbol);
-                $('#collapse'+fixed).append("<div id='chartDemoContainer'></div>");
+                $('#collapse'+symbol).append("<div id='chartDemoContainer'></div>");
                 new Markit.InteractiveChartApi(symbol, 3650);
         });
     };
-
-    function insertString(a, b, at)
-    {
-        var position = a.indexOf('.'); 
-
-        if (position !== -1)
-        {
-            return a.substr(0, position) + '\\\\' + a.substr(position);    
-        }  
-
-        return a;
-    }
 });

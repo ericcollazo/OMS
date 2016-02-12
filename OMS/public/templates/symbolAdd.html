@@ -1,0 +1,35 @@
+﻿<div id="Research" class="input-group">
+    <input placeholder="Enter stock symbol..." type="text" ng-model="newSymbol" class="form-control ng-pristine ng-valid ng-touched">
+    <div id="Action" class="input-group-btn"></div>
+    <button type="button" ng-click="symbolLookUp()" class="btn btn-sm btn-success">Add To Grid</button>
+</div>
+<div id="Research" class="input-group">
+    <input placeholder="Enter stock symbol..." type="text" ng-model="newSymbol" class="form-control ng-pristine ng-valid ng-touched">
+    <div id="Action" class="input-group-btn"></div>
+    <button type="button" ng-click="symbolLookUp()" class="btn btn-sm btn-success">Add To Grid</button>
+</div>
+<div id="lookUpModal" tabindex="-1" role="dialog" aria-labelledby="lookUpModalLabel" class="modal fade bs-example-modal-sm">
+    <div role="document" class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-label="Close" class="close"> <span aria-hidden="true">&times;</span></button>
+                <div id="lookUpModalLabel" class="modal-title">
+                    <h3>Select Stock to Add</h3>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    <div ng-repeat="lookUp in lookUps | orderBy:'Symbol'" ng-click="$parent.selected = lookUp" ng-class="{active:selected==lookUp}" class="list-group-item">
+                        <h4 ng-class="" class="list-group-item-heading">{{lookUp.Symbol}} </h4>
+                        <p class="list-group-item-text">
+                            {{lookUp.Name}} ({{lookUp.Exchange}})
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="addSymbol(selected.Symbol)" class="btn btn-sm btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
