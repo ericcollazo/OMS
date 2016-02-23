@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>OMS</Name>
     <RootNamespace>OMS</RootNamespace>
-    <NameOfLastUsedPublishProfile>SpinWave-OMS</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>oms-spinwave</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <None Include="oms-spinwave.pubxml" />
     <Content Include="public\js\oms.js" />
     <Content Include="public\js\research.js" />
     <Content Include="public\javascripts\highstock.js" />
@@ -67,7 +68,6 @@
     <Content Include="public\stylesheets\style.styl" />
     <Content Include="public\templates\symbolAdd.html" />
     <Content Include="README.md" />
-    <None Include="SpinWave-OMS.pubxml" />
     <Content Include="views\contact.jade" />
     <Content Include="views\about.jade" />
     <Content Include="views\index.jade" />

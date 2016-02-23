@@ -8,7 +8,7 @@ var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var mongo = require('mongodb').MongoClient;
-var dbCollection = process.env.CUSTOMCONNSTR_MONGOLAB_URI + "OMS";
+var dbConnection = process.env.CUSTOMCONNSTR_MONGOLAB_URI_OMS;
 
 var app = express();
 
@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
     var gridInterval = setInterval(function () { refreshGrid(); }, 30000);
     
     function refreshGrid(){
-        mongo.connect(dbCollection, function (err, db) {
+        mongo.connect(dbConnection, function (err, db) {
             if (err) {
                 console.warn(err.message);
             } else {
@@ -73,7 +73,7 @@ io.on('connection', function (socket) {
     
     socket.on('gridAdd', function (msg) {
         
-        mongo.connect(dbCollection, function (err, db) {
+        mongo.connect(dbConnection, function (err, db) {
             if (err) {
                 console.warn(err.message);
             } else {
@@ -89,7 +89,7 @@ io.on('connection', function (socket) {
     
     socket.on('gridRemove', function (msg) {
         
-        mongo.connect(dbCollection, function (err, db) {
+        mongo.connect(dbConnection, function (err, db) {
             if (err) {
                 console.warn(err.message);
             } else {
@@ -105,7 +105,7 @@ io.on('connection', function (socket) {
 
     socket.on('trade', function (msg) {
         
-        mongo.connect(dbCollection, function (err, db) {
+        mongo.connect(dbConnection, function (err, db) {
             if (err) {
                 console.warn(err.message);
             } else {
