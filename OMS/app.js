@@ -8,7 +8,7 @@ var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var mongo = require('mongodb').MongoClient;
-var dbCollection = "mongodb://localhost/OMS"
+var dbCollection = process.env.CUSTOMCONNSTR_MONGOLAB_URI + "OMS";
 
 var app = express();
 
